@@ -70,19 +70,35 @@ router.get('/index/', async(req,res)=>{
     res.json({product})
 })
 
+router.get('/aggregation', async(req,res)=>{
+    try {
+        const response = await productManager.aggregationMet()
+        res.status(200).json(response)
+    } catch (error) {
+        res.status(500).json({error})
+    }
+})
+
+
+router.get('/paginate', async(req,res)=>{
+    const {limit=10,page=1,sort,...query} = req.query
+    try {
+        console.log(req.query);
+        const products = await productManager.paginateFun(limit,page,sort,query)
+        res.status(200).json({message:'Products', products})
+    } catch (error) {
+        throw res.status(500).json({error})
+    }
+})
 
 router.get('/', async(req,res)=>{
     try {
-        /* const {limit,page,sort,...query} = req.query
-        const products = await productManager.paginateFun(req.query)
-        console.log(products); */
         const products = await productManager.getProducts()
-
-/*         if(products.length){
+        if(products.length){
             res.status(200).json({message:'Products', products})
         } else {
             res.status(200).json({message:'No products found'})
-        } */
+        }
         res.status(200).json({message:'Products', products})
     } catch (error) {
         throw res.status(500).json({error})
@@ -122,30 +138,6 @@ router.post('/',async(req,res)=>{
     }
 })
 
-
-/* router.post("/", async (req, res) => {
-
-    const { title, description, price, code, category } = req.body;
-    
-    if (!title || !description || !price || !code || !category) {
-    
-    return res.status(400).json({ message: "Some data is missing" });
-    
-    }
-    
-    try {
-    
-    const newProduct = await productManager.createProduct(req.body);
-    
-    res.status(200).json({ message: "New Product", newProduct });
-    
-    } catch (error) {
-    
-    throw error;
-    
-    }
-    
-    }); */
 
 router.delete('/:id',async(req,res)=>{
     const {id} = req.params

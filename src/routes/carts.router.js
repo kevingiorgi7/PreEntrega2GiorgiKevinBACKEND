@@ -69,6 +69,8 @@ import { cartManager } from "../managers/carts/CartsManagerMongo.js";
 
 const router = Router()
 
+
+// Obtener todos los carritos
 router.get('/', async(req,res)=>{
     try {
         const carts = await cartManager.getCarts()
@@ -81,7 +83,7 @@ router.get('/', async(req,res)=>{
         res.status(500).json({error})
     }
 })
-
+// Obtener un carrito por ID
 router.get('/:id',async(req,res)=>{
     const {id} = req.params
     try {
@@ -89,25 +91,38 @@ router.get('/:id',async(req,res)=>{
         if(!cart){
             res.status(400).json({message: 'Invalid ID'})
         } else {
-            res.status(200).json({message: 'Cart found', cart})
+            res.status(200).json({message: cart})
         }
     } catch (error) {
-        res.status(500).json({error})
+        res.status(500).json({error: "Carrito no encontreado"})
     }
 })
-
+// Crear un nuevo carrito
 router.post('/',async(req,res)=>{
     try {
         const newCart = await cartManager.createCart(req.body)
         res.status(200).json({message: 'New Cart', newCart})
     } catch (error) {
-        res.status(500).json({error})
+        res.status(500).json({error: "El carrito no se creó"})
     }
 })
-
+// Borrar un carrito por ID
+router.delete('/:cid',async(req,res)=>{
+    const {cid} = req.params
+    try {
+        const cartDeleted = await cartManager.deleteCart(cid)
+        if(!cid){
+            return res.status(400).json({message: 'Invalid ID'});
+        }
+    res.status(200).json({message: 'Cart Deleted', cartDeleted})
+    } catch (error) {
+        res.status(500).json({error: "El carrito no se borró"})
+    }
+})
+// Agregar una CANTIDAD de un producto por ID a un carrito por ID
 router.post('/:cid/products/:pid',async(req,res)=>{
     const {cid,pid} = req.params
-    const newQuantity = parseInt(1)
+    const newQuantity = req.body.quantity
     try {
         if (!newQuantity || isNaN(newQuantity)) {
             return res.status(400).json({ error: 'Cantidad no válida' });
@@ -116,11 +131,63 @@ router.post('/:cid/products/:pid',async(req,res)=>{
         if (!addProduct) {
             return res.status(404).json({ error: 'Carrito no encontrado' });
         }
-        
-        console.log(addProduct, cid, pid, quantity);
         res.status(200).json({message:'Producto agregado', product: addProduct})
     } catch (error) {
         res.status(500).json({error: "Carrito no actualizado"})
+    }
+})
+// Borrar un producto por ID de un carrito por ID
+router.delete('/:cid/products/:pid', async(req,res)=>{
+    const {cid,pid} = req.params
+    try {
+        const productDeleted = await cartManager.deleteProductCart(cid,pid)
+        res.status(200).json({message:'Producto eliminado', product: productDeleted})
+    } catch (error) {
+        res.status(500).json({error: "Carrito no actualizado"})
+    }
+})
+
+// Actualizar carrito
+router.put('/:cid', async (req, res) => {
+    const {cid} = req.params
+    const productsNew = req.body
+    try {
+        const cart = await cartManager.updateCart(cid, productsNew); 
+        res.status(200).json({message:'Carrito actualizado', product: cart})
+    } catch (error) {
+        res.status(500).json({error: "Carrito no actualizado"})
+    }
+});
+
+//Actualizar cantidad de un producto del carrito
+router.put('/:cid/products/:pid', async (req, res) => {
+    const {cid,pid} = req.params
+    const newQuantity = req.body.quantity
+    try {
+        if (!newQuantity || isNaN(newQuantity)) {
+            return res.status(400).json({ error: 'Cantidad no válida' });
+        }
+        const cart = await cartManager.updateQuantity(cid,pid,newQuantity)
+        if (!cart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+        res.status(200).json({message:'Cantidad actualizada', cart: cart})
+    } catch (error) {
+        res.status(500).json({error: "Cantidad no actualizada"})
+    }
+});
+
+//Vaciar Carrito
+router.delete('/clear/:cid',async(req,res)=>{
+    const {cid} = req.params
+    try {
+        const cart = await cartManager.clearCart(cid)
+        if (!cart) {
+            return res.status(404).json({ error: 'Carrito no encontrado' });
+        }
+        res.status(200).json({message: 'Cart Empty', cart})
+    } catch (error) {
+        res.status(500).json({error: "El carrito no se vació"})
     }
 })
 
