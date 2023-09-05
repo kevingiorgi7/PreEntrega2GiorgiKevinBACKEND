@@ -10,8 +10,8 @@ const formAdd = document.getElementById('addProductForm')
 const formDel = document.getElementById('deleteProductForm')
 const idDelete = document.getElementById('productId')
 
-import ProductManager from ".../managers/products/ProductManagerFile.js";
-const manager = new ProductManager("Products.json");
+//import ProductManager from ".../managers/products/ProductManagerMongo.js";
+
 
 
 formAdd.onsubmit = (e) => {
@@ -54,14 +54,14 @@ socketClient.on('productDeleted', (productDeleted) => {
     }
 });
 
-/* socketClient.on('productsUpdated', productsUpdated => {
+socketClient.on('productsUpdated', productsUpdated => {
     const productList = document.getElementById('productsList');
     productsUpdated.map(p => {
         const newItem = document.createElement('li');
         newItem.innerHTML = `ID:${p.id} - <strong>${p.title}:</strong> ${p.description}`;
         productList.appendChild(newItem)})
 });
- */
+
 
 
 

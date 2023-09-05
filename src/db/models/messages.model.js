@@ -1,14 +1,13 @@
 import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema({
-    user: String,
-    message: String,
-}, {
-    timestamps: true,
+    user: {
+        type: String
+    },
+    message: {
+        type: String
+    },
 });
 
-const Message = mongoose.model("Message", messageSchema);
+export const messageModel = mongoose.model("message", messageSchema);
 
-export {
-    Message
-};

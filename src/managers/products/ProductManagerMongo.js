@@ -2,7 +2,8 @@ import {
     productsModel
 } from "../../db/models/products.model.js";
 
-class ProductManager {
+
+export class ProductManager {
 
     //PAGINATE 
     async paginateFun(limit,page,sortPrice,query) {

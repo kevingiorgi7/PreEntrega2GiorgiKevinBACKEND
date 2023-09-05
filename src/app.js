@@ -10,11 +10,10 @@ import productsRouter from './routes/products.router.js';
 import cartsRouter from './routes/carts.router.js';
 
 
-/* import ProductManager from './managers/products/ProductManagerFile.js';
-const manager = new ProductManager("Products.json"); */
+import { productManager }  from './managers/products/ProductManagerMongo.js';
 
 
-/* import { Server } from 'socket.io' */
+import { Server } from 'socket.io'
 
 
 
@@ -46,12 +45,9 @@ const httpServer = app.listen(PORT,()=>{
 })
 
 
+const socketServer = new Server(httpServer)
 
-
-
-/* const socketServer = new Server(httpServer)
-
-const products = await manager.getProducts()
+const products = await productManager.getProducts()
 
 socketServer.on('connection', async socket=>{
     console.log(`Usuario conectado: ${socket.id}`);
@@ -59,18 +55,17 @@ socketServer.on('connection', async socket=>{
         console.log(`Usuario desconectado: ${socket.id}`);
     })
     socket.on('addProduct', async (newProduct) => {
-        const productAdded = await manager.addProducts(newProduct);
+        const productAdded = await productManager.addProducts(newProduct);
         socketServer.emit('productAdded', productAdded);
     });
     socket.on('deleteProduct', async (productId) => {
-        const productDeleted = await manager.deleteProduct(Number(productId));
+        const productDeleted = await productManager.deleteProduct(Number(productId));
         socketServer.emit('productDeleted', productDeleted)
 
-        const productsUpdated = await manager.getProducts()
+        const productsUpdated = await productManager.getProducts()
         console.log(productsUpdated);
         socketServer.emit('productDeleted', productsUpdated => {
             products = productsUpdated
         }); 
     });
 }) 
- */
