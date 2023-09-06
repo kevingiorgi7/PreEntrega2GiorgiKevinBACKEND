@@ -31,15 +31,51 @@ export class ProductManager {
         }
     }
 
-    async getProducts(){
+    async paginateRender(limit,page,sortPrice,query) {
         try {
-            const products = await productsModel.find({})
-            return products
+            const result = await productsModel.paginate(
+                query,
+                {limit, page, sort:{price:sortPrice}, lean: true,}
+            )
+            const info = {
+                status: result ? "Success" : "Error",
+                count: result.totalDocs,
+                payload: result.docs,
+                totalPages: result.totalPages,
+                page:page,
+                prevPages: result.prevPage,
+                nextPage: result.nextPage,
+                hasNextPage: result.hasNextPage,
+                hasPrevPage: result.hasPrevPage,
+                nextLink: result.hasNextPage ? `http://localhost:8080/api/views/products?page=${result.nextPage}&limit=${limit}` : null,
+                prevLink: result.hasPrevPage ? `http://localhost:8080/api/views/products?page=${result.prevPage}&limit=${limit}` : null,
+            }
+            return {info}
         } catch (error) {
             throw error
         }
     }
 
+    async getProducts(){
+        try {
+            const products = await productsModel.find({}).lean()
+            return products
+        } catch (error) {
+            throw error
+        }
+    } 
+
+
+/*     async getProductsPaginate(queryOptions = {}, sortOptions = {}, limit = 10, page = 1) {
+        const options = {
+            sort: sortOptions,
+            page: page,
+            limit: limit,
+            lean: true,
+        };
+        const result = await productsModel.paginate(queryOptions, options);
+        return result;
+    } */
 
     async createProduct(obj) {
         try {

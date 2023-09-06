@@ -1,0 +1,19 @@
+<div>
+    <h2>Catágolo:</h2>
+    <div>
+    {{#each products}}
+        <div>
+            <li>
+            <strong>Nombre del producto: </strong>{{title}}<br>
+            <strong>Descripcion: </strong>{{description}}<br>
+            <strong>Categoria: </strong>{{category}}<br>
+            <br>
+            </li>
+        </div>
+    {{/each}}
+    </div>  
+</div>
+
+
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/index.js"></script>
