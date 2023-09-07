@@ -6,6 +6,7 @@ import {
 export class ProductManager {
 
     //PAGINATE 
+    // Products Router
     async paginateFun(limit,page,sortPrice,query) {
         try {
             const result = await productsModel.paginate(
@@ -31,6 +32,7 @@ export class ProductManager {
         }
     }
 
+    // Views Router
     async paginateRender(limit,page,sortPrice,query) {
         try {
             const result = await productsModel.paginate(
@@ -47,6 +49,7 @@ export class ProductManager {
                 nextPage: result.nextPage,
                 hasNextPage: result.hasNextPage,
                 hasPrevPage: result.hasPrevPage,
+                // FALTA PONER EL QUERY EN EL NEXT Y PREV LINK //
                 nextLink: result.hasNextPage ? `http://localhost:8080/api/views/products?page=${result.nextPage}&limit=${limit}` : null,
                 prevLink: result.hasPrevPage ? `http://localhost:8080/api/views/products?page=${result.prevPage}&limit=${limit}` : null,
             }
@@ -64,18 +67,6 @@ export class ProductManager {
             throw error
         }
     } 
-
-
-/*     async getProductsPaginate(queryOptions = {}, sortOptions = {}, limit = 10, page = 1) {
-        const options = {
-            sort: sortOptions,
-            page: page,
-            limit: limit,
-            lean: true,
-        };
-        const result = await productsModel.paginate(queryOptions, options);
-        return result;
-    } */
 
     async createProduct(obj) {
         try {
