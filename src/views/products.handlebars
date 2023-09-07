@@ -1,7 +1,7 @@
 <div>
     <h2>Catágolo:</h2>
     <div>
-    {{#each products}}
+    {{#each payload}}
         <div>
             <li>
             <strong>Nombre del producto: </strong>{{title}}<br>
@@ -11,6 +11,20 @@
             </li>
         </div>
     {{/each}}
+    
+    {{#if info.totalPages}}
+    <p>Página {{info.page}} de {{info.totalPages}}</p>
+
+    {{#if info.prevLink}}
+        <a href={{info.prevLink}}>Página anterior</a>
+    {{/if}}
+
+    {{#if info.nextLink}}
+        <a href={{info.nextLink}}>Página siguiente</a>
+    {{/if}}
+    
+    {{/if}}
+
     </div>  
 </div>
 
