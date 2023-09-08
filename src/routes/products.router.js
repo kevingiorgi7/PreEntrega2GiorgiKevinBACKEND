@@ -94,11 +94,6 @@ router.get('/paginate', async(req,res)=>{
 router.get('/', async(req,res)=>{
     try {
         const products = await productManager.getProducts()
-        if(products.length){
-            res.status(200).json({message:'Products', products})
-        } else {
-            res.status(200).json({message:'No products found'})
-        }
         res.status(200).json({message:'Products', products})
     } catch (error) {
         throw res.status(500).json({error})

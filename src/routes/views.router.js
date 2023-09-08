@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { productManager } from "../managers/products/ProductManagerMongo.js";
+import { cartManager }  from "../managers/carts/CartsManagerMongo.js";
 import { __dirname } from "../utils.js";
 
 const router = Router();
@@ -35,11 +36,44 @@ router.get("/products", async (req, res) => {
         );
         const info = products.info;
         const payload = info.payload;
-
         res.render("products", {
             info,
             payload
         });
+    } catch (error) {
+        throw res.status(500).json({
+            error
+        });
+    }
+});
+
+
+// DETAILS PRODUCTS HANDLEBARS
+router.get("/products/:pid", async (req, res) => {
+    const {pid} = req.params
+    try {
+        const product = await productManager.getProductById(pid);
+        const title = product.title
+        const description = product.description
+        const price = product.price
+        const code = product.code
+        const stock = product.stock
+        const category = product.category
+        res.render("detailsProducts", {title, description, price, code, stock, category});
+    } catch (error) {
+        throw res.status(500).json({
+            error
+        });
+    }
+});
+
+router.get("/carts/:cid", async (req, res) => {
+    const {cid} = req.params
+    try {
+        const cart = await cartManager.getCartById(cid);
+        const products = cart.products
+        console.log(products);
+        res.render("cart", {cid, products});
     } catch (error) {
         throw res.status(500).json({
             error

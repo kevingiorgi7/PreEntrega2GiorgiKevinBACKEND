@@ -59,6 +59,8 @@ export class ProductManager {
         }
     }
 
+
+
     async getProducts(){
         try {
             const products = await productsModel.find({}).lean()

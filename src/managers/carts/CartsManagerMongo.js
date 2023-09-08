@@ -15,7 +15,7 @@ class CartManager {
     // Obtener un carrito por ID
     async getCartById(id){
         try {
-            const cart = await cartsModel.findById(id).populate('products.product',['title','description','price','stock','category'])
+            const cart = await cartsModel.findById(id).lean().populate('products.product',['title','description','price','stock','category'])
             if(!cart){
                 return {"ERROR":`El Carrito con ID ${id} no existe o no es un número`}
             } 
@@ -60,7 +60,7 @@ class CartManager {
     // Agregar una CANTIDAD de un producto por ID a un carrito por ID
     async addProduct(cid, pid, newQuantity){
         try {
-            const cart = await this.getCartById(cid)
+            const cart = await cartsModel.findById(cid)
             const product = cart.products.find((p)=>p.product.equals(pid));
             if (product) {
                 product.quantity += newQuantity
@@ -76,7 +76,7 @@ class CartManager {
     // Borrar un producto por ID de un carrito por ID
     async deleteProductCart(cid,pid){
         try {
-            const cart = await this.getCartById(cid);
+            const cart = await cartsModel.findById(cid)
             if (!cart) {throw new Error('Carrito no encontrado')};
             cart.products = cart.products.filter(p=> !p.product.equals(pid));
             await this.saveCart(cart);
@@ -92,7 +92,7 @@ class CartManager {
     //Actualizar carrito
     async updateCart(cid, productsNew) {
         try {
-            const cart = await this.getCartById(cid);
+            const cart = await cartsModel.findById(cid)
             cart.products.push(productsNew);
             await this.saveCart(cart);
             return cart;
@@ -104,7 +104,7 @@ class CartManager {
     //Actualizar cantidad de un producto del carrito
     async updateQuantity(cid, pid, newQuantity){
         try {
-            const cart = await this.getCartById(cid);
+            const cart = await cartsModel.findById(cid);
             const product = cart.products.find((p)=>p.product.equals(pid));
             if (product) {
                 product.quantity = newQuantity
@@ -121,7 +121,7 @@ class CartManager {
     //Vaciar un carrito 
     async clearCart(cid){
         try {
-            const cart = await this.getCartById(cid);
+            const cart = await cartsModel.findById(cid);
             cart.products = [];
             await this.saveCart(cart);
             return cart;
