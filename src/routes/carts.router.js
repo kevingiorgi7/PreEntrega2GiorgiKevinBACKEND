@@ -122,7 +122,7 @@ router.delete('/:cid',async(req,res)=>{
 // Agregar una CANTIDAD de un producto por ID a un carrito por ID
 router.post('/:cid/products/:pid',async(req,res)=>{
     const {cid,pid} = req.params
-    const newQuantity = req.body.quantity
+    const {newQuantity = 1} = req.query
     try {
         if (!newQuantity || isNaN(newQuantity)) {
             return res.status(400).json({ error: 'Cantidad no válida' });
